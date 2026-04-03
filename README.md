@@ -1,5 +1,5 @@
-# ball
+# grid
 
-## Getting familiar with GitHub Pages
+## interactive grid
 
 [View Here](https://adamriggs.github.io/grid/)
