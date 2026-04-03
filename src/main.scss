@@ -4,8 +4,18 @@ body {
 }
 
 .content {
+	// border: 1px solid red;
 	height: 100vh;
 	width: 100vw;
+}
+
+.github-link {
+	bottom: 20px;
+	font-family: sans-serif;
+	position: absolute;
+	right: 20px;
+
+	a { text-decoration: none;	}
 }
 
 .debug-output {
