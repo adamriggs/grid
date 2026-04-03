@@ -24,7 +24,7 @@ export const initKnightRider = () => {
 			duration: .75,
 			repeat: -1,
 			yoyo: true,
-			ease: 'power2.in',
+			ease: 'linear',
 		},
 	);
 };

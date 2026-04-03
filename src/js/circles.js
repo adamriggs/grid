@@ -27,6 +27,17 @@ const stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
 
+/**
+ * TODO:
+ * - base animation on time, not frames (currently if fps drops, animation slows down)
+ * - grid lines as seperate layer that can be toggled on/off and isn't part of the animation (currently if you have the grid on, it gets redrawn every frame which is inefficient)
+ * - add option for color schemes (get some color palettes from kuler)
+ * - add option for multiple simultaneous interactions (e.g. multi-touch)
+ * - add option for sinewaves
+ * - add option for fireworks
+ * - add option for worm
+ */
+
 const destroyCircles = () => {
 	for (let i = 0; i < circles.length; i++) {
 		if (Object.hasOwn(circles[i], 'gfx')) {
