@@ -14,7 +14,7 @@ export const parameters = {
 	showHeartBeat: true,
 	size: 10,
 	interactionRadius: 15,
-	animationMaxTime: 500
+	animationMaxTime: 1000
 };
 
 const gui = new GUI();
@@ -50,6 +50,6 @@ gui.add(parameters, 'size', 3, 100).onChange((value) => {
 gui.add(parameters, 'interactionRadius', 1, 100).onChange((value) => {
 	parameters.interactionRadius = value;
 });
-gui.add(parameters, 'animationMaxTime', 100, 1000).onChange((value) => {
+gui.add(parameters, 'animationMaxTime', 100, 5000).onChange((value) => {
 	parameters.animationMaxTime = value;
 });
