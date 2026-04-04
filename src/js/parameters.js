@@ -12,20 +12,20 @@ export const parameters = {
 	squares: false,
 	showKnightRider: false,
 	showHeartBeat: true,
-	showGameOfLife: false,
+	showLife: false,
 	size: 10,
 	interactionRadius: 15,
-	animationDuration: 1000
+	animationDuration: 500
 };
 
 const gui = new GUI();
-document.body.appendChild(gui.domElement);
-gui.add(parameters, 'showGrid').onChange((value) => {
-	grid.visible = value;
-});
 gui.add(parameters, 'squares').onChange((value) => {
 	parameters.squares = value;
 	initGrid();
+});
+document.body.appendChild(gui.domElement);
+gui.add(parameters, 'showGrid').onChange((value) => {
+	grid.visible = value;
 });
 gui.add(parameters, 'showKnightRider').onChange((value) => {
 	parameters.showKnightRider = value;
@@ -43,8 +43,8 @@ gui.add(parameters, 'showHeartBeat').onChange((value) => {
 		endHeartBeat();
 	}
 });
-gui.add(parameters, 'showGameOfLife').onChange((value) => {
-	parameters.showGameOfLife = value;
+gui.add(parameters, 'showLife').onChange((value) => {
+	parameters.showLife = value;
 	initGrid();
 });
 gui.add(parameters, 'size', 3, 100).onChange((value) => {

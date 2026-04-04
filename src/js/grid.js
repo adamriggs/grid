@@ -23,30 +23,16 @@ let cells = [];
 // const backgroundColor = 0xABDADC;
 const backgroundColor = 0x708090; // slate gray
 const strokeColor = 0x000000;
-// const highlightColor = 0xFF9900;
+const highlightColor = 0xF0F8FF; // alice blue
+// const animationColor = 0xFF9900;
 // const highlightColor = 0x2C3E50;	// deep navy
 // const highlightColor = 0x708090; // slate gray
-const highlightColor = 0xF0F8FF; // alice blue
-// const highlightColor = 0xdcd0ff;	// light purple
+// const animationColor = 0xdcd0ff;	// light purple
+const animationColor = 0xF0F8FF; // alice blue
 
 const stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
-
-/**
- * TODO:
- * - ✅fix heartbeat peak value
- * - ✅base animation on time, not frames
- * - ✅grid lines as seperate layer that can be toggled on/off and isn't part of the animation 
- * - ✅proper resizing and restart animations on resize
- * - ✅fix github link
- * - cellular automata
- * - add option for color schemes (get some color palettes from kuler)
- * - add option for multiple simultaneous interactions (e.g. multi-touch)
- * - add option for sinewaves
- * - add option for fireworks
- * - add option for worm
- */
 
 const destroyCells = () => {
 	for (let i = 0; i < cells.length; i++) {
@@ -93,6 +79,8 @@ const positionCells = () => {
 				app.stage.addChild(gfx);
 				cells[cellNum].gfx = gfx;
 
+				cells[cellNum].color = highlightColor;
+
 				gfx.x = cellXPos;
 				gfx.y = cellYPos;
 				cells[cellNum].x = cellXPos;
@@ -121,6 +109,7 @@ const drawCells = (timestamp) => {
 		if (timestamp > cells[i].animationStartTime + parameters.animationDuration) {
 			cells[i].animating = false;
 			// cells[i].caState = false;
+			cells[i].color = highlightColor;
 			cells[i].gfx.clear();
 		}
 
@@ -140,7 +129,7 @@ const drawCells = (timestamp) => {
 				} else {
 					cells[i].gfx.rect(cells[i].x - (radius), cells[i].y - (radius), radius * 2, radius * 2);
 				}
-				cells[i].gfx.fill({color: highlightColor, alpha: alpha});
+				cells[i].gfx.fill({color: cells[i].color, alpha: alpha});
 				cells[i].gfx.stroke({
 					alpha: alpha,
 					color: strokeColor,
@@ -186,33 +175,10 @@ const animate = (timestamp) => {
 	// const deltaTime = timestamp - prevTime;
 	// prevTime = timestamp;
 
-	if (parameters.showGameOfLife === true) {
+	if (parameters.showLife === true) {
 		// console.log('stepping');
 		cells = caStep(cells, timestamp);
 	}
-
-	// let startIndex = 5;
-	// cells[startIndex].animating = true;
-	// cells[startIndex].caState = true;
-	// cells[startIndex].animationStartTime = timestamp;
-	// cells[startIndex + 1].animating = true;
-	// cells[startIndex + 1].caState = true;
-	// cells[startIndex + 1].animationStartTime = timestamp;
-	// cells[startIndex + 2].animating = true;
-	// cells[startIndex + 2].caState = true;
-	// cells[startIndex + 2].animationStartTime = timestamp;
-
-	// startIndex = 133;
-	// cells[startIndex].animating = true;
-	// cells[startIndex].caState = true;
-	// cells[startIndex].animationStartTime = timestamp;
-	// cells[startIndex + 1].animating = true;
-	// cells[startIndex + 1].caState = true;
-	// cells[startIndex + 1].animationStartTime = timestamp;
-	// cells[startIndex + 2].animating = true;
-	// cells[startIndex + 2].caState = true;
-	// cells[startIndex + 2].animationStartTime = timestamp;
-
 
 	findInteractables(timestamp);
 	drawCells(timestamp);
@@ -259,6 +225,7 @@ const findInteractables = (timestamp) => {
 			if (isInteractable(point.x, point.y, cells[i])) {
 				cells[i].animating = true;
 				cells[i].animationStartTime = timestamp;
+				cells[i].color = animationColor;
 				cells[i].caState = true;
 			}
 		}
