@@ -7,6 +7,7 @@ import {
 	gridPoints,
 	GRID_POINT_MOUSE
 } from './animations';
+import { caStep } from './ca';
 
 const app = new PIXI.Application();
 const contentElem = document.getElementById('content');
@@ -14,6 +15,8 @@ const contentElem = document.getElementById('content');
 // let prevTime = 0;
 
 export let grid = new PIXI.Graphics();
+export let gridRows = 0;
+export let gridCols = 0;
 
 let cells = [];
 // const backgroundColor = 0xF0F8FF; // alice blue
@@ -50,6 +53,9 @@ const destroyCells = () => {
 		if (Object.hasOwn(cells[i], 'gfx')) {
 			app.stage.removeChild(cells[i].gfx);
 			cells[i].gfx.destroy();
+			cells[i].animating = false;
+			cells[i].caState = false;
+			cells[i].animationStartTime = 0;
 		}
 	}
 	cells = [];
@@ -62,8 +68,11 @@ const destroyCells = () => {
 const positionCells = () => {
 	let cellXPos = parameters.size / 2;
 	let cellYPos = parameters.size / 2;
-	const cellXCount = Math.ceil(window.innerWidth / parameters.size);
-	const cellYCount = Math.ceil(window.innerHeight / parameters.size);
+	const cellXCount = Math.ceil(window.innerWidth / 2 / parameters.size);
+	const cellYCount = Math.ceil(window.innerHeight / 2 / parameters.size);
+
+	gridCols = cellXCount;
+	gridRows = cellYCount;
 
 	grid = new PIXI.Graphics();
 	grid.visible = parameters.showGrid;
@@ -89,8 +98,6 @@ const positionCells = () => {
 				cells[cellNum].x = cellXPos;
 				cells[cellNum].y = cellYPos;
 				cells[cellNum].radius = parameters.size;
-
-				// grid.addChild(gfx);
 			}
 
 			cellXPos += parameters.size;
@@ -113,6 +120,7 @@ const drawCells = (timestamp) => {
 
 		if (timestamp > cells[i].animationStartTime + parameters.animationDuration) {
 			cells[i].animating = false;
+			// cells[i].caState = false;
 			cells[i].gfx.clear();
 		}
 
@@ -138,23 +146,6 @@ const drawCells = (timestamp) => {
 					color: strokeColor,
 					width: 1
 				});
-			} else {
-				// if (parameters.showGrid === true) {
-				// 	if(parameters.squares === false) {
-				// 		cells[i].gfx.circle(cells[i].x, cells[i].y, cells[i].radius);
-				// 	} else {
-				// 		cells[i].gfx.rect(
-				// 			cells[i].x - parameters.size,
-				// 			cells[i].y - parameters.size,
-				// 			parameters.size * 2,
-				// 			parameters.size * 2
-				// 		);
-				// 	}
-				// 	cells[i].gfx.stroke({
-				// 		width: 1,
-				// 		color: strokeColor
-				// 	});
-				// }
 			}
 		}
 	}
@@ -194,6 +185,34 @@ const animate = (timestamp) => {
 	// }
 	// const deltaTime = timestamp - prevTime;
 	// prevTime = timestamp;
+
+	if (parameters.showGameOfLife === true) {
+		// console.log('stepping');
+		cells = caStep(cells, timestamp);
+	}
+
+	// let startIndex = 5;
+	// cells[startIndex].animating = true;
+	// cells[startIndex].caState = true;
+	// cells[startIndex].animationStartTime = timestamp;
+	// cells[startIndex + 1].animating = true;
+	// cells[startIndex + 1].caState = true;
+	// cells[startIndex + 1].animationStartTime = timestamp;
+	// cells[startIndex + 2].animating = true;
+	// cells[startIndex + 2].caState = true;
+	// cells[startIndex + 2].animationStartTime = timestamp;
+
+	// startIndex = 133;
+	// cells[startIndex].animating = true;
+	// cells[startIndex].caState = true;
+	// cells[startIndex].animationStartTime = timestamp;
+	// cells[startIndex + 1].animating = true;
+	// cells[startIndex + 1].caState = true;
+	// cells[startIndex + 1].animationStartTime = timestamp;
+	// cells[startIndex + 2].animating = true;
+	// cells[startIndex + 2].caState = true;
+	// cells[startIndex + 2].animationStartTime = timestamp;
+
 
 	findInteractables(timestamp);
 	drawCells(timestamp);
@@ -239,9 +258,8 @@ const findInteractables = (timestamp) => {
 		for (let i = 0; i < cells.length; i++) {
 			if (isInteractable(point.x, point.y, cells[i])) {
 				cells[i].animating = true;
-				// cells[i].animationCounter = parameters.animationDuration;
 				cells[i].animationStartTime = timestamp;
-				// cells[i].animationEndTime = timestamp + parameters.animationDuration;
+				cells[i].caState = true;
 			}
 		}
 	});
