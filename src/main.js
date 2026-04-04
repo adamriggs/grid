@@ -1,1 +1,1 @@
-import './js/circles';
+import './js/grid';

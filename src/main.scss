@@ -15,7 +15,10 @@ body {
 	position: absolute;
 	right: 20px;
 
-	a { text-decoration: none;	}
+	a {
+		color: #F0F8FF;
+		text-decoration: none;	
+	}
 }
 
 .debug-output {

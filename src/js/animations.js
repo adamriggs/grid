@@ -12,16 +12,18 @@ export const endKnightRider = () => {
 }
 
 export const initKnightRider = () => {
-	gridPoints[GRID_POINT_KNIGHT] = { x: 0, y: window.innerHeight / 4 };
-	const xBuffer = 300;
+	const yPos = Math.floor(window.innerHeight / 4 / parameters.size) * parameters.size + (parameters.size / 2);
+
+	gridPoints[GRID_POINT_KNIGHT] = { x: 0, y: yPos };
+	const xBuffer = window.innerWidth / 8;
 
 	gsap.fromTo(gridPoints[GRID_POINT_KNIGHT],
 		{
-			x: xBuffer
+			x: (window.innerWidth / 4) - xBuffer
 		},
 		{
-			x: window.innerWidth / 2 - xBuffer,
-			duration: .75,
+			x: (window.innerWidth / 4) + xBuffer,
+			duration: 1,
 			repeat: -1,
 			yoyo: true,
 			ease: 'linear',

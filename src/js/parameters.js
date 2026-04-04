@@ -1,5 +1,5 @@
 import GUI from 'lil-gui';
-import { initGrid } from './circles';
+import { initGrid, grid } from './grid';
 import {
 	initHeartBeat,
 	endHeartBeat,
@@ -14,14 +14,15 @@ export const parameters = {
 	showHeartBeat: true,
 	size: 10,
 	interactionRadius: 15,
-	animationMaxTime: 1000
+	animationDuration: 1000
 };
 
 const gui = new GUI();
 document.body.appendChild(gui.domElement);
 gui.add(parameters, 'showGrid').onChange((value) => {
-	parameters.showGrid = value;
-	initGrid();
+	// parameters.showGrid = value;
+	// initGrid();
+	grid.visible = value;
 });
 gui.add(parameters, 'squares').onChange((value) => {
 	parameters.squares = value;
@@ -50,6 +51,6 @@ gui.add(parameters, 'size', 3, 100).onChange((value) => {
 gui.add(parameters, 'interactionRadius', 1, 100).onChange((value) => {
 	parameters.interactionRadius = value;
 });
-gui.add(parameters, 'animationMaxTime', 100, 5000).onChange((value) => {
-	parameters.animationMaxTime = value;
+gui.add(parameters, 'animationDuration', 100, 5000).onChange((value) => {
+	parameters.animationDuration = value;
 });
