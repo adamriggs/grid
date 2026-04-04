@@ -13,6 +13,9 @@ const contentElem = document.getElementById('content');
 
 let prevTime = 0;
 
+let grid = new PIXI.Graphics();
+app.stage.addChild(grid);
+
 let circles = [];
 // const backgroundColor = 0xABDADC;
 const backgroundColor = 0x708090;
@@ -29,6 +32,7 @@ document.body.appendChild(stats.dom);
 
 /**
  * TODO:
+ * + fix heartbeat peak value
  * - base animation on time, not frames (currently if fps drops, animation slows down)
  * - grid lines as seperate layer that can be toggled on/off and isn't part of the animation (currently if you have the grid on, it gets redrawn every frame which is inefficient)
  * - add option for color schemes (get some color palettes from kuler)
@@ -53,6 +57,8 @@ const positionCircles = () => {
 	let circleYPos = parameters.size / 2;
 	const circleXCount = Math.ceil(window.innerWidth / (parameters.size * 2));
 	const circleYCount = Math.ceil(window.innerHeight / (parameters.size * 2));
+	grid = new PIXI.Graphics();
+	// app.stage.addChild(grid);
 
 	let circleNum = 0;
 
@@ -91,6 +97,10 @@ const positionCircles = () => {
 		circleXPos = parameters.size / 2;
 		circleYPos = parameters.size * (i + 1) + (parameters.size / 2);
 	}
+}
+
+const drawGrid = () => {
+
 }
 
 const drawCircles = (deltaTime) => {
@@ -165,6 +175,7 @@ const initApp = async () => {
 export const initGrid = () => {
 	destroyCircles();
 	positionCircles();
+	drawGrid();
 	drawCircles();
 }
 

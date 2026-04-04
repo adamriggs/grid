@@ -36,9 +36,9 @@ export const endHeartBeat = () => {
 
 export const initHeartBeat = () => {
 	const xBuffer = 0;
-	const yBuffer = 200;
+	const yBuffer = 125;
 	const heartBeatDuration = .5;
-	gridPoints[GRID_POINT_HEARTBEAT] = { x: 0, y: window.innerHeight / 2 - yBuffer };
+	gridPoints[GRID_POINT_HEARTBEAT] = { x: 0, y: window.innerHeight / 2 };
 
 	const heartBeat = gsap.timeline({
 		// duration: 2,
@@ -49,7 +49,7 @@ export const initHeartBeat = () => {
 	heartBeat.fromTo(gridPoints[GRID_POINT_HEARTBEAT],
 		{
 			x: xBuffer,
-			y: window.innerHeight / 2 - yBuffer
+			y: window.innerHeight / 4
 		},
 		{
 			x: window.innerWidth / 2 - xBuffer + (parameters.size * 2),
@@ -59,10 +59,10 @@ export const initHeartBeat = () => {
 
 	heartBeat.fromTo(gridPoints[GRID_POINT_HEARTBEAT],
 		{
-			y: window.innerHeight / 2 - yBuffer
+			y: window.innerHeight / 4
 		},
 		{
-			y: yBuffer,
+			y: window.innerHeight / 4 - yBuffer,
 			duration: heartBeatDuration / 4,
 			ease: 'power2.inOut',
 		},
@@ -71,10 +71,10 @@ export const initHeartBeat = () => {
 
 	heartBeat.fromTo(gridPoints[GRID_POINT_HEARTBEAT],
 		{
-			y: yBuffer
+			y: window.innerHeight / 4 - yBuffer
 		},
 		{
-			y: window.innerHeight / 2 - yBuffer,
+			y: window.innerHeight / 4,
 			duration: heartBeatDuration / 8,
 			ease: 'power2.out',
 		},
