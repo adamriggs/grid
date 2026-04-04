@@ -13,13 +13,12 @@ const contentElem = document.getElementById('content');
 
 let prevTime = 0;
 
-let grid = new PIXI.Graphics();
-app.stage.addChild(grid);
+// let grid = new PIXI.Graphics();
 
 let circles = [];
 // const backgroundColor = 0xABDADC;
 const backgroundColor = 0x708090;
-const circleColor = 0x000000;
+const strokeColor = 0x000000;
 // const highlightColor = 0xFF9900;
 // const highlightColor = 0x2C3E50;	// deep navy
 // const highlightColor = 0x708090; // slate gray
@@ -32,9 +31,10 @@ document.body.appendChild(stats.dom);
 
 /**
  * TODO:
- * + fix heartbeat peak value
- * - base animation on time, not frames (currently if fps drops, animation slows down)
- * - grid lines as seperate layer that can be toggled on/off and isn't part of the animation (currently if you have the grid on, it gets redrawn every frame which is inefficient)
+ * - ✅fix heartbeat peak value
+ * - ✅base animation on time, not frames
+ * - grid lines as seperate layer that can be toggled on/off and isn't part of the animation 
+ * - cellular automata
  * - add option for color schemes (get some color palettes from kuler)
  * - add option for multiple simultaneous interactions (e.g. multi-touch)
  * - add option for sinewaves
@@ -50,6 +50,10 @@ const destroyCircles = () => {
 		}
 	}
 	circles = [];
+
+	// app.stage.removeChild(grid);
+	// grid.clear();
+	// grid.destroy();
 }
 
 const positionCircles = () => {
@@ -57,7 +61,7 @@ const positionCircles = () => {
 	let circleYPos = parameters.size / 2;
 	const circleXCount = Math.ceil(window.innerWidth / (parameters.size * 2));
 	const circleYCount = Math.ceil(window.innerHeight / (parameters.size * 2));
-	grid = new PIXI.Graphics();
+
 	// app.stage.addChild(grid);
 
 	let circleNum = 0;
@@ -75,11 +79,16 @@ const positionCircles = () => {
 					if (parameters.squares === false) {
 						gfx.circle(circleXPos, circleYPos, parameters.size);
 					} else {
-						gfx.rect(circleXPos - parameters.size, circleYPos - parameters.size, parameters.size * 2, parameters.size * 2);
+						gfx.rect(
+							circleXPos - parameters.size,
+							circleYPos - parameters.size,
+							parameters.size * 2,
+							parameters.size * 2
+						);
 					}
 					gfx.stroke({
 						width: 1,
-						color: circleColor
+						color: strokeColor
 					});
 				}
 
@@ -88,6 +97,8 @@ const positionCircles = () => {
 				circles[circleNum].x = circleXPos;
 				circles[circleNum].y = circleYPos;
 				circles[circleNum].radius = parameters.size;
+
+				// grid.addChild(gfx);
 			}
 
 			circleXPos += parameters.size;
@@ -103,11 +114,12 @@ const drawGrid = () => {
 
 }
 
-const drawCircles = (deltaTime) => {
+const drawCircles = (timestamp) => {
 	for (let i = 0; i < circles.length; i++) {
+
 		if (circles[i].animating === true) {
-			circles[i].animationCounter--;
-			if (circles[i].animationCounter <= 0) {
+
+			if (timestamp > circles[i].animationStartTime + parameters.animationMaxTime) {
 				circles[i].animating = false;
 			}
 			
@@ -115,8 +127,10 @@ const drawCircles = (deltaTime) => {
 
 			if (circles[i].animating === true) {
 
-				const radius = circles[i].radius * circles[i].animationCounter / parameters.maxAnimationTime;
-				const alpha = circles[i].animationCounter / parameters.maxAnimationTime;
+				const ratio = 1 - (timestamp - circles[i].animationStartTime) / parameters.animationMaxTime;
+
+				const radius = ratio * parameters.size;
+				const alpha = ratio;
 
 				if(parameters.squares === false) {
 					circles[i].gfx.circle(circles[i].x, circles[i].y, radius);
@@ -126,7 +140,7 @@ const drawCircles = (deltaTime) => {
 				circles[i].gfx.fill({color: highlightColor, alpha: alpha});
 				circles[i].gfx.stroke({
 					alpha: alpha,
-					color: circleColor,
+					color: strokeColor,
 					width: 1
 				});
 			} else {
@@ -143,7 +157,7 @@ const drawCircles = (deltaTime) => {
 					}
 					circles[i].gfx.stroke({
 						width: 1,
-						color: circleColor
+						color: strokeColor
 					});
 				}
 			}
@@ -184,11 +198,11 @@ const animate = (timestamp) => {
 	if (!prevTime) {
 		prevTime = timestamp;
 	}
-	const deltaTime = timestamp - prevTime;
+	// const deltaTime = timestamp - prevTime;
 	prevTime = timestamp;
 
-	findInteractables();
-	drawCircles(deltaTime);
+	findInteractables(timestamp);
+	drawCircles(timestamp);
 
 	stats.end();
 	requestAnimationFrame(animate);
@@ -199,7 +213,7 @@ const handleResize = () => {
 }
 
 const handleLeave = (event) => {
-	console.log('leave');
+	// console.log('leave');
 	gridPoints[GRID_POINT_MOUSE] = null;
 }
 
@@ -216,7 +230,7 @@ const handleInteraction = (event) => {
 	gridPoints[GRID_POINT_MOUSE] = { x: eventX, y: eventY };
 }
 
-const findInteractables = () => {
+const findInteractables = (timestamp) => {
 	gridPoints.forEach((point) => {
 		if (point === null) {
 			return;
@@ -224,7 +238,9 @@ const findInteractables = () => {
 		for (let i = 0; i < circles.length; i++) {
 			if (isInteractable(point.x, point.y, circles[i])) {
 				circles[i].animating = true;
-				circles[i].animationCounter = parameters.maxAnimationTime;
+				// circles[i].animationCounter = parameters.animationMaxTime;
+				circles[i].animationStartTime = timestamp;
+				// circles[i].animationEndTime = timestamp + parameters.animationMaxTime;
 			}
 		}
 	});
