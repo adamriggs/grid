@@ -8,8 +8,8 @@ import {
 } from './animations';
 
 export const parameters = {
-	showGrid: false,
 	squares: false,
+	showGrid: false,
 	showKnightRider: false,
 	showHeartBeat: true,
 	showLife: false,
@@ -45,7 +45,7 @@ gui.add(parameters, 'showHeartBeat').onChange((value) => {
 });
 gui.add(parameters, 'showLife').onChange((value) => {
 	parameters.showLife = value;
-	initGrid();
+	// initGrid();
 });
 gui.add(parameters, 'size', 3, 100).onChange((value) => {
 	parameters.size = value;

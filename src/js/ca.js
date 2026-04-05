@@ -2,28 +2,21 @@ import { parameters } from "./parameters";
 import { gridRows, gridCols } from "./grid";
 
 export const caStep = (grid, timestamp) => {
-	const newGrid = grid;
-	let aliveCount = 0;
-	let deadCount = 0;
 
 	for (let i = 0; i < grid.length; i++) {
-		// const neighbors = countNeighborsWraparound(grid, i);
+		if (grid[i].isInteractable === true) { continue; }
+		
 		const neighbors = countNeighbors(grid, i, gridRows, gridCols);
-		// const neighbors = 3;
-		// console.log('neighbors:', neighbors);
 
 		if (neighbors < 2 || neighbors > 3) {
-			// console.log('dead');
-			deadCount++;
 			grid[i].caState = false; // Cell dies
+			// leave to decay through the draw loop
 		}
-	
+
 		if (neighbors === 3) {
-			// console.log('alive:', i);
-			aliveCount++;
 			grid[i].caState = true; // Cell becomes alive
 			grid[i].animating = true;
-			grid[i].animationStartTime = timestamp;
+			grid[i].animationStartTime = timestamp; // reset start time so it doesn't decay
 		}
 	}
 

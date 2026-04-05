@@ -12,17 +12,17 @@ export const endKnightRider = () => {
 }
 
 export const initKnightRider = () => {
-	const yPos = Math.floor(window.innerHeight / 4 / parameters.size) * parameters.size + (parameters.size / 2);
+	const yPos = Math.floor(window.innerHeight / 2 / parameters.size) * parameters.size + (parameters.size / 2);
 
 	gridPoints[GRID_POINT_KNIGHT] = { x: 0, y: yPos };
-	const xBuffer = window.innerWidth / 8;
+	const xBuffer = window.innerWidth / 4;
 
 	gsap.fromTo(gridPoints[GRID_POINT_KNIGHT],
 		{
-			x: (window.innerWidth / 4) - xBuffer
+			x: (window.innerWidth / 2) - xBuffer
 		},
 		{
-			x: (window.innerWidth / 4) + xBuffer,
+			x: (window.innerWidth / 2) + xBuffer,
 			duration: 1,
 			repeat: -1,
 			yoyo: true,
@@ -39,7 +39,7 @@ export const endHeartBeat = () => {
 export const initHeartBeat = () => {
 	const xBuffer = 0;
 	const yBuffer = 125;
-	const heartBeatDuration = .5;
+	const heartBeatDuration = 1;
 	gridPoints[GRID_POINT_HEARTBEAT] = { x: 0, y: window.innerHeight / 2 };
 
 	const heartBeat = gsap.timeline({
@@ -51,17 +51,17 @@ export const initHeartBeat = () => {
 	heartBeat.fromTo(gridPoints[GRID_POINT_HEARTBEAT],
 		{
 			x: xBuffer,
-			y: window.innerHeight / 4
+			y: window.innerHeight / 2
 		},
 		{
-			x: window.innerWidth / 2 - xBuffer + (parameters.size * 2),
+			x: window.innerWidth - xBuffer + (parameters.size * 2),
 			duration: heartBeatDuration,
 		},
 	);
 
 	heartBeat.fromTo(gridPoints[GRID_POINT_HEARTBEAT],
 		{
-			y: window.innerHeight / 4
+			y: window.innerHeight / 2
 		},
 		{
 			y: window.innerHeight / 4 - yBuffer,
@@ -76,7 +76,7 @@ export const initHeartBeat = () => {
 			y: window.innerHeight / 4 - yBuffer
 		},
 		{
-			y: window.innerHeight / 4,
+			y: window.innerHeight / 2,
 			duration: heartBeatDuration / 8,
 			ease: 'power2.out',
 		},

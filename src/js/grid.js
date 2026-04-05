@@ -23,12 +23,15 @@ let cells = [];
 // const backgroundColor = 0xABDADC;
 const backgroundColor = 0x708090; // slate gray
 const strokeColor = 0x000000;
-const highlightColor = 0xF0F8FF; // alice blue
-// const animationColor = 0xFF9900;
-// const highlightColor = 0x2C3E50;	// deep navy
-// const highlightColor = 0x708090; // slate gray
-// const animationColor = 0xdcd0ff;	// light purple
-const animationColor = 0xF0F8FF; // alice blue
+const secondaryColor = 0xF0F8FF; // alice blue
+// const secondaryColor = 0x2C3E50;	// deep navy
+// const secondaryColor = 0x708090; // slate gray
+const primaryColor = 0xFF9900;
+// const primaryColor = 0xdcd0ff;	// light purple
+// const primaryColor = 0xF0F8FF;	// alice blue
+let primaryTexture;
+let secondaryTexture;
+
 
 const stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -36,13 +39,11 @@ document.body.appendChild(stats.dom);
 
 const destroyCells = () => {
 	for (let i = 0; i < cells.length; i++) {
-		if (Object.hasOwn(cells[i], 'gfx')) {
-			app.stage.removeChild(cells[i].gfx);
-			cells[i].gfx.destroy();
-			cells[i].animating = false;
-			cells[i].caState = false;
-			cells[i].animationStartTime = 0;
-		}
+		// if (Object.hasOwn(cells[i], 'sprite')) {
+			app.stage.removeChild(cells[i].sprite);
+			cells[i].sprite.destroy();
+			cells[i] = {};
+		// }
 	}
 	cells = [];
 
@@ -52,10 +53,10 @@ const destroyCells = () => {
 }
 
 const positionCells = () => {
-	let cellXPos = parameters.size / 2;
-	let cellYPos = parameters.size / 2;
-	const cellXCount = Math.ceil(window.innerWidth / 2 / parameters.size);
-	const cellYCount = Math.ceil(window.innerHeight / 2 / parameters.size);
+	let cellXPos = 0;
+	let cellYPos = 0;
+	const cellXCount = Math.ceil(window.innerWidth / parameters.size);
+	const cellYCount = Math.ceil(window.innerHeight / parameters.size);
 
 	gridCols = cellXCount;
 	gridRows = cellYCount;
@@ -66,35 +67,31 @@ const positionCells = () => {
 	let cellNum = 0;
 
 	for (let i = 0; i < cellYCount; i++) {
-		grid.moveTo(0, cellYPos - parameters.size / 2);
-		grid.lineTo(window.innerWidth, cellYPos - parameters.size / 2);
+		grid.moveTo(0, cellYPos);
+		grid.lineTo(window.innerWidth, cellYPos);
 
 		for (let j = 0; j < cellXCount; j++) {
-			grid.moveTo(cellXPos - parameters.size / 2, 0);
-			grid.lineTo(cellXPos - parameters.size / 2, window.innerHeight);
+			grid.moveTo(cellXPos + 1, 0);
+			grid.lineTo(cellXPos + 1, window.innerHeight);
 
-			if (cells[cellNum] === undefined) {
-				cells[cellNum] = {};
-				const gfx = new PIXI.Graphics();
-				app.stage.addChild(gfx);
-				cells[cellNum].gfx = gfx;
+			cells[cellNum] = {};
+			cells[cellNum].sprite = new PIXI.Sprite(secondaryTexture);
 
-				cells[cellNum].color = highlightColor;
-
-				gfx.x = cellXPos;
-				gfx.y = cellYPos;
-				cells[cellNum].x = cellXPos;
-				cells[cellNum].y = cellYPos;
-				cells[cellNum].radius = parameters.size;
-			}
+			cells[cellNum].sprite.anchor.set(.5, .5);
+			cells[cellNum].sprite.x = cellXPos - (parameters.size / 2);
+			cells[cellNum].sprite.y = cellYPos - (parameters.size / 2);
+			cells[cellNum].sprite.alpha = 0;
+			app.stage.addChild(cells[cellNum].sprite);
 
 			cellXPos += parameters.size;
 			cellNum++;
 		}
 
-		cellXPos = parameters.size / 2;
-		cellYPos = parameters.size * (i + 1) + (parameters.size / 2);
+		cellXPos = 0;
+		cellYPos = parameters.size * (i + 1);
 	}
+
+	console.log(cellNum);
 
 	grid.stroke({
 		width: 1,
@@ -108,34 +105,15 @@ const drawCells = (timestamp) => {
 
 		if (timestamp > cells[i].animationStartTime + parameters.animationDuration) {
 			cells[i].animating = false;
-			// cells[i].caState = false;
-			cells[i].color = highlightColor;
-			cells[i].gfx.clear();
+			cells[i].isInteractable = false;
+			cells[i].caState = false;
+			cells[i].sprite.alpha = 0;
 		}
 
 		if (cells[i].animating === true) {
-			
-			cells[i].gfx.clear();
-
-			if (cells[i].animating === true) {
-
-				const ratio = 1 - (timestamp - cells[i].animationStartTime) / parameters.animationDuration;
-
-				const radius = ratio * parameters.size;
-				const alpha = ratio;
-
-				if(parameters.squares === false) {
-					cells[i].gfx.circle(cells[i].x, cells[i].y, radius);
-				} else {
-					cells[i].gfx.rect(cells[i].x - (radius), cells[i].y - (radius), radius * 2, radius * 2);
-				}
-				cells[i].gfx.fill({color: cells[i].color, alpha: alpha});
-				cells[i].gfx.stroke({
-					alpha: alpha,
-					color: strokeColor,
-					width: 1
-				});
-			}
+			const decay = 1 - (timestamp - cells[i].animationStartTime) / parameters.animationDuration;
+			cells[i].sprite.alpha = decay;
+			cells[i].sprite.scale.set(decay);
 		}
 	}
 }
@@ -149,6 +127,34 @@ const initApp = async () => {
 	});
 
 	contentElem.appendChild(app.canvas);
+
+	const primaryCircle = new PIXI.Graphics();
+	primaryCircle.circle(0, 0, parameters.size / 2);
+	primaryCircle.fill({ color: primaryColor, alpha: 1 });
+	primaryCircle.stroke({
+		alpha: 1,
+		color: strokeColor,
+		width: 1
+	});
+	primaryCircle.cacheAsTexture = true;
+	primaryTexture = app.renderer.generateTexture(primaryCircle, {
+		scaleMode: 'linear',
+		resolution: 2 // Higher resolution for better quality
+	});
+
+	const secondaryCircle = new PIXI.Graphics();
+	secondaryCircle.circle(0, 0, parameters.size / 2);
+	secondaryCircle.fill({ color: secondaryColor, alpha: 1 });
+	secondaryCircle.stroke({
+		alpha: 1,
+		color: strokeColor,
+		width: 1
+	});
+	secondaryCircle.cacheAsTexture = true;
+	secondaryTexture = app.renderer.generateTexture(secondaryCircle, {
+		scaleMode: 'linear',
+		resolution: 2 // Higher resolution for better quality
+	});
 
 	if (parameters.showHeartBeat === true) {
 		initHeartBeat();
@@ -176,7 +182,6 @@ const animate = (timestamp) => {
 	// prevTime = timestamp;
 
 	if (parameters.showLife === true) {
-		// console.log('stepping');
 		cells = caStep(cells, timestamp);
 	}
 
@@ -187,14 +192,30 @@ const animate = (timestamp) => {
 	requestAnimationFrame(animate);
 }
 
+const findInteractables = (timestamp) => {
+	gridPoints.forEach((point) => {
+		if (point === null) {
+			return;
+		}
+		for (let i = 0; i < cells.length; i++) {
+			if (Math.hypot(cells[i].sprite.x - point.x, cells[i].sprite.y - point.y) < parameters.interactionRadius) {
+				cells[i].animating = true;
+				cells[i].isInteractable = true;
+				cells[i].animationStartTime = timestamp;
+				cells[i].caState = true;
+			}
+		}
+	});
+}
+
 const handleResize = () => {
 	initGrid();
 
-	if(parameters.showHeartBeat === true) {
+	if (parameters.showHeartBeat === true) {
 		initHeartBeat();
 	}
 
-	if(parameters.showKnightRider === true) {
+	if (parameters.showKnightRider === true) {
 		initKnightRider();
 	}
 }
@@ -204,6 +225,7 @@ const handleLeave = () => {
 }
 
 const handleInteraction = (event) => {
+	// console.log('handleInteraction()');
 	let eventX = event.clientX;
 	let eventY = event.clientY;
 	if (event.touches) {
@@ -211,36 +233,9 @@ const handleInteraction = (event) => {
 		eventY = event.touches[0].clientY;
 	}
 
-	eventX = eventX / 2;
-	eventY = eventY / 2;
+	// eventX = eventX / 2;
+	// eventY = eventY / 2;
 	gridPoints[GRID_POINT_MOUSE] = { x: eventX, y: eventY };
-}
-
-const findInteractables = (timestamp) => {
-	gridPoints.forEach((point) => {
-		if (point === null) {
-			return;
-		}
-		for (let i = 0; i < cells.length; i++) {
-			if (isInteractable(point.x, point.y, cells[i])) {
-				cells[i].animating = true;
-				cells[i].animationStartTime = timestamp;
-				cells[i].color = animationColor;
-				cells[i].caState = true;
-			}
-		}
-	});
-}
-
-const isInteractable = (x, y, cell) => {
-	let found = false;
-
-	const distance = Math.hypot(cell.gfx.x - x, cell.gfx.y - y);
-	if (distance < parameters.interactionRadius) {
-		found = true;
-	}
-
-	return found;
 }
 
 window.addEventListener('load', () => {
