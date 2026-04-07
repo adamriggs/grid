@@ -15,9 +15,9 @@ export const parameters = {
 	showKnightRider: false,
 	showHeartBeat: true,
 	showLife: true,
-	gridSize: 20,
-	fillSize: 20,
-	interactionRadius: 30,
+	gridSize: 12,
+	fillSize: 12,
+	interactionRadius: 24,
 	animationDuration: 1000
 };
 
