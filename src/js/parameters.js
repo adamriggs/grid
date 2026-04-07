@@ -1,5 +1,5 @@
 import GUI from 'lil-gui';
-import { initGrid, grid } from './grid';
+import { initGrid, grid, setStage } from './grid';
 import {
 	initHeartBeat,
 	endHeartBeat,
@@ -8,25 +8,38 @@ import {
 } from './animations';
 
 export const parameters = {
+	total_cells: 0,
 	squares: false,
 	showGrid: false,
+	showStroke: true,
 	showKnightRider: false,
 	showHeartBeat: true,
-	showLife: false,
-	size: 10,
+	showLife: true,
+	gridSize: 10,
+	fillSize: 10,
 	interactionRadius: 15,
-	animationDuration: 500
+	animationDuration: 1000
 };
 
 const gui = new GUI();
+document.body.appendChild(gui.domElement);
+
+gui.add(parameters, 'total_cells').listen();
+
 gui.add(parameters, 'squares').onChange((value) => {
 	parameters.squares = value;
-	initGrid();
+	setStage();
 });
-document.body.appendChild(gui.domElement);
+
 gui.add(parameters, 'showGrid').onChange((value) => {
 	grid.visible = value;
 });
+
+gui.add(parameters, 'showStroke').onChange((value) => {
+	parameters.stroke = value;
+	setStage();
+});
+
 gui.add(parameters, 'showKnightRider').onChange((value) => {
 	parameters.showKnightRider = value;
 	if (value === true) {
@@ -35,6 +48,7 @@ gui.add(parameters, 'showKnightRider').onChange((value) => {
 		endKnightRider();
 	}
 });
+
 gui.add(parameters, 'showHeartBeat').onChange((value) => {
 	parameters.showHeartBeat = value;
 	if (value === true) {
@@ -43,17 +57,25 @@ gui.add(parameters, 'showHeartBeat').onChange((value) => {
 		endHeartBeat();
 	}
 });
+
 gui.add(parameters, 'showLife').onChange((value) => {
 	parameters.showLife = value;
-	// initGrid();
 });
-gui.add(parameters, 'size', 3, 100).onChange((value) => {
-	parameters.size = value;
+
+gui.add(parameters, 'gridSize', 5, 100).onChange((value) => {
+	parameters.gridSize = value;
 	initGrid();
 });
+
+gui.add(parameters, 'fillSize', 5, 100).onChange((value) => {
+	parameters.fillSize = value;
+	initGrid();
+});
+
 gui.add(parameters, 'interactionRadius', 1, 100).onChange((value) => {
 	parameters.interactionRadius = value;
 });
+
 gui.add(parameters, 'animationDuration', 100, 5000).onChange((value) => {
 	parameters.animationDuration = value;
 });

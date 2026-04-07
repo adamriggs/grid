@@ -5,18 +5,17 @@ export const caStep = (grid, timestamp) => {
 
 	for (let i = 0; i < grid.length; i++) {
 		if (grid[i].isInteractable === true) { continue; }
-		
+
 		const neighbors = countNeighbors(grid, i, gridRows, gridCols);
 
 		if (neighbors < 2 || neighbors > 3) {
-			grid[i].caState = false; // Cell dies
+			grid[i].isAlive = false; // Cell dies
 			// leave to decay through the draw loop
 		}
 
 		if (neighbors === 3) {
-			grid[i].caState = true; // Cell becomes alive
-			grid[i].animating = true;
-			grid[i].animationStartTime = timestamp; // reset start time so it doesn't decay
+			grid[i].isAlive = true; // Cell is alive
+			grid[i].lifeStart = timestamp; // set start time for decay
 		}
 	}
 
@@ -43,7 +42,7 @@ function countNeighbors(grid, idx, rows, cols) {
 			if (neighborRow >= 0 && neighborRow < rows && neighborCol >= 0 && neighborCol < cols) {
 				// Convert back to 1D index
 				let neighborIdx = neighborRow * cols + neighborCol;
-				if (grid[neighborIdx].caState === true) {
+				if (grid[neighborIdx].isAlive === true) {
 					count += 1;
 				}
 			}
@@ -54,7 +53,7 @@ function countNeighbors(grid, idx, rows, cols) {
 
 const countNeighborsWraparound = (grid, i) => {
 	let count = 0;
-	const rowLength = Math.floor(window.innerWidth / parameters.size);
+	const rowLength = Math.floor(window.innerWidth / parameters.gridSize);
 	const totalCells = grid.length;
 
 	// Calculate neighbor indices with wraparound
@@ -70,8 +69,8 @@ const countNeighborsWraparound = (grid, i) => {
 	];
 
 	for (const neighborIndex of neighbors) {
-		if (grid[neighborIndex].caState === true) {
-			count += grid[neighborIndex].caState;
+		if (grid[neighborIndex].isAlive === true) {
+			count += 1;
 		}
 	}
 
