@@ -1,5 +1,5 @@
 import GUI from 'lil-gui';
-import { initGrid, grid, setStage } from './grid';
+import { initGrid, grid, setStage, blurFilter, addFilter, clearFilter } from './grid';
 import {
 	initHeartBeat,
 	endHeartBeat,
@@ -14,11 +14,13 @@ export const parameters = {
 	showStroke: true,
 	showKnightRider: false,
 	showHeartBeat: true,
-	showLife: true,
-	gridSize: 12,
-	fillSize: 12,
-	interactionRadius: 24,
-	animationDuration: 1000
+	showLife: false,
+	blur: false,
+	blurStrength: 4,
+	gridSize: 20,
+	fillSize: 20,
+	interactionRadius: 30,
+	fadeoutDuration: 1000
 };
 
 const gui = new GUI();
@@ -40,28 +42,6 @@ gui.add(parameters, 'showStroke').onChange((value) => {
 	setStage();
 });
 
-gui.add(parameters, 'showKnightRider').onChange((value) => {
-	parameters.showKnightRider = value;
-	if (value === true) {
-		initKnightRider();
-	} else {
-		endKnightRider();
-	}
-});
-
-gui.add(parameters, 'showHeartBeat').onChange((value) => {
-	parameters.showHeartBeat = value;
-	if (value === true) {
-		initHeartBeat();
-	} else {
-		endHeartBeat();
-	}
-});
-
-gui.add(parameters, 'showLife').onChange((value) => {
-	parameters.showLife = value;
-});
-
 gui.add(parameters, 'gridSize', 5, 100).onChange((value) => {
 	parameters.gridSize = value;
 	initGrid();
@@ -76,6 +56,49 @@ gui.add(parameters, 'interactionRadius', 1, 100).onChange((value) => {
 	parameters.interactionRadius = value;
 });
 
-gui.add(parameters, 'animationDuration', 100, 5000).onChange((value) => {
-	parameters.animationDuration = value;
+gui.add(parameters, 'fadeoutDuration', 100, 5000).onChange((value) => {
+	parameters.fadeoutDuration = value;
+});
+
+
+const animations = gui.addFolder('Animations');
+
+animations.add(parameters, 'showKnightRider').onChange((value) => {
+	parameters.showKnightRider = value;
+	if (value === true) {
+		initKnightRider();
+	} else {
+		endKnightRider();
+	}
+});
+
+animations.add(parameters, 'showHeartBeat').onChange((value) => {
+	parameters.showHeartBeat = value;
+	if (value === true) {
+		initHeartBeat();
+	} else {
+		endHeartBeat();
+	}
+});
+
+animations.add(parameters, 'showLife').onChange((value) => {
+	parameters.showLife = value;
+});
+
+
+
+const filters = gui.addFolder('Post Processing');
+
+filters.add(parameters, 'blur').onChange((value) => {
+	parameters.blurFilter = value;
+
+	if (value === true) {
+		addFilter(blurFilter);
+	} else {
+		clearFilter();
+	}
+});
+
+filters.add(parameters, 'blurStrength', 0, 20).onChange((value) => {
+	blurFilter.strength = value;
 });

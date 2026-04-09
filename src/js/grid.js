@@ -13,6 +13,10 @@ import { primaryCircle, primarySquare, secondaryCircle, secondarySquare, strokeC
 const app = new PIXI.Application();
 const contentElem = document.getElementById('content');
 
+const filters = [];
+export const blurFilter = new PIXI.BlurFilter();
+blurFilter.strength = 4; // Set blur intensity
+
 // let prevTime = 0;
 
 export let grid = new PIXI.Graphics();
@@ -109,7 +113,6 @@ const initSprite = (sprite, x, y) => {
 	sprite.x = x;
 	sprite.y = y;
 	sprite.visible = false;
-	// app.stage.addChild(sprite);
 }
 
 const positionCells = () => {
@@ -266,21 +269,21 @@ const drawCells = (timestamp) => {
 	for (let i = 0; i < cells.length; i++) {
 		let cell = cells[i];
 
-		if (timestamp > (cell.interactionStart + parameters.animationDuration)) {
+		if (timestamp > (cell.interactionStart + parameters.fadeoutDuration)) {
 			cell.isInteracting = false;
 		}
 
-		if (timestamp > (cell.lifeStart + parameters.animationDuration)) {
+		if (timestamp > (cell.lifeStart + parameters.fadeoutDuration)) {
 			cell.isAlive = false;
 		}
 
 		if (cell.isInteracting || cell.isAlive) {
-			let decay = 1 - (timestamp - cell.lifeStart) / parameters.animationDuration;
+			let decay = 1 - (timestamp - cell.lifeStart) / parameters.fadeoutDuration;
 			let alpha = .5;
 			const spriteNumber = getSpriteNumber(cell.isInteracting);
 
 			if (cell.isInteracting === true) {
-				decay = 1 - (timestamp - cell.interactionStart) / parameters.animationDuration;
+				decay = 1 - (timestamp - cell.interactionStart) / parameters.fadeoutDuration;
 				alpha = decay;
 
 				cell.sprites[getSpriteNumber(false)].visible = false;
@@ -297,6 +300,16 @@ const drawCells = (timestamp) => {
 
 		cells[i] = cell;
 	}
+}
+
+export const addFilter = (filter) => {
+	filters.push(filter);
+	app.stage.filters = filters;
+}
+
+export const clearFilter = () => {
+	filters.length = 0;
+	app.stage.filters = [];
 }
 
 const initApp = async () => {
@@ -347,6 +360,8 @@ const animate = (timestamp) => {
 }
 
 const findInteractables = (timestamp) => {
+	// I know this is bad but I haven't fixed it yet
+	// it should be one loop through the cells where the interaction points are checked
 	interactionPoints.forEach((point) => {
 		if (point === null) {
 			return;

@@ -25,9 +25,10 @@ TODO:
 ✅conways game of life
 ✅sprites instead of graphics
 perlin noise
-test post processing
+✅test post processing
 video cloud
-fix scale/alpha banding on decay - anti alias
+fix scale/alpha banding on decay - anti alias?
 consolodate various loops that happen pre-render
+add parameters to url variables for linking to specific configurations
 
 [View Here](https://adamriggs.github.io/grid/)
