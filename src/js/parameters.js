@@ -75,11 +75,6 @@ showStrokeParam.update = (value) => {
 };
 showStrokeParam.controller = gui.add(parameters, 'showStroke').onChange(value => showStrokeParam.onChange(value));
 
-// gui.add(parameters, 'gridSize', 5, 100).onChange((value) => {
-// 	parameters.gridSize = value;
-// 	initGrid();
-// });
-
 const gridSizeParam = new Param('gridSize');
 gridSizeParam.update = (value) => {
 	value = Math.round(value);
@@ -87,11 +82,6 @@ gridSizeParam.update = (value) => {
 	initGrid();
 };
 gridSizeParam.controller = gui.add(parameters, 'gridSize', 5, 500).onChange(value => gridSizeParam.onChange(value));
-
-// gui.add(parameters, 'fillSize', 5, 100).onChange((value) => {
-// 	parameters.fillSize = value;
-// 	initGrid();
-// });
 
 const fillSizeParam = new Param('fillSize');
 fillSizeParam.update = (value) => {
@@ -101,21 +91,12 @@ fillSizeParam.update = (value) => {
 };
 fillSizeParam.controller = gui.add(parameters, 'fillSize', 5, 500).onChange(value => fillSizeParam.onChange(value));
 
-// gui.add(parameters, 'interactionRadius', 1, 100).onChange((value) => {
-// 	parameters.interactionRadius = value;
-// });
-
 const interactionRadiusParam = new Param('interactionRadius');
 interactionRadiusParam.update = (value) => {
 	value = Math.round(value);
 	parameters.interactionRadius = value;
 };
 interactionRadiusParam.controller = gui.add(parameters, 'interactionRadius', 1, 500).onChange(value => interactionRadiusParam.onChange(value));
-
-
-// gui.add(parameters, 'fadeoutDuration', 100, 5000).onChange((value) => {
-// 	parameters.fadeoutDuration = value;
-// });
 
 const fadeoutDurationParam = new Param('fadeoutDuration');
 fadeoutDurationParam.update = (value) => {
@@ -183,6 +164,8 @@ blurStrengthParam.controller = filters.add(parameters, 'blurStrength', 0, 20).on
  * url buttons
  */
 
+const sharing = gui.addFolder('Sharing');
+
 const setURL = {
 	setQueryString: function () {
 		window.history.pushState({}, '', url.toString());
@@ -197,8 +180,8 @@ const setURL = {
 	}
 }
 
-gui.add(setURL, 'setQueryString');
-gui.add(setURL, 'clearQueryString');
+sharing.add(setURL, 'setQueryString');
+sharing.add(setURL, 'clearQueryString');
 
 /**
  * 

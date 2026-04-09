@@ -44,7 +44,6 @@ const PRIMARY_SQUARE_NO_STROKE = 5;
 const SECONDARY_CIRCLE_NO_STROKE = 6;
 const SECONDARY_SQUARE_NO_STROKE = 7;
 
-
 const stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
@@ -69,42 +68,42 @@ const destroyCells = () => {
 const initTextures = () => {
 	primaryCircleTexture = app.renderer.generateTexture(primaryCircle(true), {
 		scaleMode: 'linear',
-		resolution: 2 // Higher resolution for better quality
+		resolution: 2
 	});
 
 	primarySquareTexture = app.renderer.generateTexture(primarySquare(true), {
 		scaleMode: 'linear',
-		resolution: 2 // Higher resolution for better quality
+		resolution: 2
 	});
 
 	secondaryCircleTexture = app.renderer.generateTexture(secondaryCircle(true), {
 		scaleMode: 'linear',
-		resolution: 2 // Higher resolution for better quality
+		resolution: 2
 	});
 
 	secondarySquareTexture = app.renderer.generateTexture(secondarySquare(true), {
 		scaleMode: 'linear',
-		resolution: 2 // Higher resolution for better quality
+		resolution: 2
 	});
 
 	primaryCircleTextureNoStroke = app.renderer.generateTexture(primaryCircle(false), {
 		scaleMode: 'linear',
-		resolution: 2 // Higher resolution for better quality
+		resolution: 2
 	});
 
 	primarySquareTextureNoStroke = app.renderer.generateTexture(primarySquare(false), {
 		scaleMode: 'linear',
-		resolution: 2 // Higher resolution for better quality
+		resolution: 2
 	});
 
 	secondaryCircleTextureNoStroke = app.renderer.generateTexture(secondaryCircle(false), {
 		scaleMode: 'linear',
-		resolution: 2 // Higher resolution for better quality
+		resolution: 2
 	});
 
 	secondarySquareTextureNoStroke = app.renderer.generateTexture(secondarySquare(false), {
 		scaleMode: 'linear',
-		resolution: 2 // Higher resolution for better quality
+		resolution: 2
 	});
 }
 
@@ -118,11 +117,8 @@ const initSprite = (sprite, x, y) => {
 const positionCells = () => {
 	let cellXPos = 0;
 	let cellYPos = 0;
-	const cellXCount = Math.ceil(window.innerWidth / parameters.gridSize);
-	const cellYCount = Math.ceil(window.innerHeight / parameters.gridSize);
-
-	gridCols = cellXCount;
-	gridRows = cellYCount;
+	gridCols = Math.ceil(window.innerWidth / parameters.gridSize) + 1;
+	gridRows = Math.ceil(window.innerHeight / parameters.gridSize) + 1;
 
 	grid = new PIXI.Graphics();
 	grid.visible = parameters.showGrid;
@@ -131,11 +127,11 @@ const positionCells = () => {
 
 	initTextures();
 
-	for (let i = 0; i < cellYCount; i++) {
+	for (let i = 0; i < gridRows; i++) {
 		grid.moveTo(0, cellYPos);
 		grid.lineTo(window.innerWidth, cellYPos);
 
-		for (let j = 0; j < cellXCount; j++) {
+		for (let j = 0; j < gridCols; j++) {
 			grid.moveTo(cellXPos + 1, 0);
 			grid.lineTo(cellXPos + 1, window.innerHeight);
 
@@ -332,9 +328,6 @@ const initApp = async () => {
 
 	handleResize();
 	
-	// setTimeout(() => {
-	// 	initParameters();
-	// }, 500);
 	initParameters();
 }
 

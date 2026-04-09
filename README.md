@@ -4,17 +4,21 @@
 
 This creates a grid. The cells either display circles or squares. Use your mouse pointer to interact with it.
 
-####Controls
+###Controls
 * squares: toggle circles or squares
 * showGrid: toggle showing the grid lines
 * showStroke: toggle showing an outline on the circles or squares
-* showKnightRider: knight rider animation tweens x,y coordinates back and forth
-* showHeartBeat: heartbeat is same as above but with a different path
-* showLife: toggle conways game of life on and off
 * gridSize: width and height of grid cells
 * fillSize: width and height of the grid fill - making it larger than the grid size creates a cloudy effect if you also turn off the stroke
 * interactionRadius: distance from the x,y coordinate of the mouse or animation point that affects the grid cells
-* animationDuration: length of time for a cell that is no longer being interacted with to alpha and scale to zero
+* fadeoutDuration: length of time for a cell that is no longer being interacted with to alpha and scale to zero
+animations
+* showKnightRider: knight rider animation tweens x,y coordinates back and forth
+* showHeartBeat: heartbeat is same as above but with a different path
+* showLife: toggle conways game of life on and off
+post processing
+* blur: toggle blur on and off
+* blurStrength: how hard it blurs
 
 TODO:
 ✅fix heartbeat peak value
