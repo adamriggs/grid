@@ -360,6 +360,9 @@ const animate = (timestamp) => {
 const findInteractables = (timestamp) => {
 	// I know this is bad but I haven't fixed it yet
 	// it should be one loop through the cells where the interaction points are checked
+
+	// write a function that returns a subset of cells in an interactionRadius box around the interaction point
+	// merge these arrays of cells together then only go through that subset to determaine precise distance
 	interactionPoints.forEach((point) => {
 		if (point === null) {
 			return;

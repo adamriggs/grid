@@ -20,7 +20,8 @@ export const parameters = {
 	gridSize: 20,
 	fillSize: 20,
 	interactionRadius: 30,
-	fadeoutDuration: 1000
+	fadeoutDuration: 1000,
+	updateURL: true,
 };
 
 const url = new URL(window.location.href);
@@ -33,6 +34,8 @@ document.body.appendChild(gui.domElement);
 gui.add(parameters, 'total_cells').listen();
 
 class Param {
+	static updateURL = true;
+
 	constructor(name) {
 		this.name = name;
 		this.value;
@@ -51,7 +54,9 @@ class Param {
 
 	setURLParameter() {
 		url.searchParams.set(this.name, this.value);
-		// window.history.pushState({}, '', url.toString());
+		// if (updateURL === true) {
+			window.history.pushState({}, '', url.toString());
+		// }
 	}
 };
 
@@ -167,21 +172,19 @@ blurStrengthParam.controller = filters.add(parameters, 'blurStrength', 0, 20).on
 const sharing = gui.addFolder('Sharing');
 
 const setURL = {
-	setQueryString: function () {
-		window.history.pushState({}, '', url.toString());
+	copyURLToClipboard: () => {
+		navigator.clipboard.writeText(url);
+
 	},
-	clearQueryString: function () {
-		// Get the current URL without the query string
+	resetParameters: function () {
 		const cleanUrl = window.location.origin + window.location.pathname;
-
-		// Update the address bar without a reload
 		window.history.replaceState({}, document.title, cleanUrl);
-
+		location.reload();
 	}
 }
 
-sharing.add(setURL, 'setQueryString');
-sharing.add(setURL, 'clearQueryString');
+sharing.add(setURL, 'copyURLToClipboard');
+sharing.add(setURL, 'resetParameters');
 
 /**
  * 
@@ -218,6 +221,9 @@ export const initParameters = () => {
 	const blurStrength = urlParams.get('blurStrength') !== null ? urlParams.get('blurStrength') : parameters.blurStrength;
 	blurParam.onChange(blur);
 	blurStrengthParam.onChange(blurStrength);
+
+	// const updateURL = urlParams.get('updateURL') !== null ? returnBinary(urlParams.get('updateURL')) : parameters.updateURL;
+	// updateURLParam.onChange(updateURL);
 
 }
 
