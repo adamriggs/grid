@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Stats from 'stats.js';
-import { parameters } from './parameters';
+import { parameters, initParameters } from './parameters';
 import {
 	initHeartBeat,
 	initKnightRider,
@@ -331,6 +331,11 @@ const initApp = async () => {
 	}
 
 	handleResize();
+	
+	// setTimeout(() => {
+	// 	initParameters();
+	// }, 500);
+	initParameters();
 }
 
 export const initGrid = () => {

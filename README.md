@@ -29,6 +29,6 @@ perlin noise
 video cloud
 fix scale/alpha banding on decay - anti alias?
 consolodate various loops that happen pre-render
-add parameters to url variables for linking to specific configurations
+✅add parameters to url variables for linking to specific configurations
 
 [View Here](https://adamriggs.github.io/grid/)
